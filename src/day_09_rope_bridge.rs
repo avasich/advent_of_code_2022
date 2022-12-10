@@ -58,7 +58,7 @@ fn rope(filename: &str, length: usize) -> usize {
 }
 
 #[cfg(test)]
-mod d9_test {
+mod d09_test {
     extern crate test;
 
     use test::Bencher;
@@ -66,9 +66,9 @@ mod d9_test {
     use super::*;
 
     static BENCH_SIZE: usize = 50;
-    static TASK_FILE: &str = "./inputs/day_9/task.txt";
-    static EXAMPLE_FILE_1: &str = "./inputs/day_9/part_1_example.txt";
-    static EXAMPLE_FILE_2: &str = "./inputs/day_9/part_2_example.txt";
+    static TASK_FILE: &str = "./inputs/day_09/task.txt";
+    static EXAMPLE_FILE_1: &str = "./inputs/day_09/part_1_example.txt";
+    static EXAMPLE_FILE_2: &str = "./inputs/day_09/part_2_example.txt";
 
     #[test]
     fn run_part_one_example() {

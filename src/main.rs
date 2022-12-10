@@ -1,8 +1,7 @@
 #![feature(test)]
 
-extern crate core;
-
-mod day_9_rope_bridge;
+mod day_09_rope_bridge;
+mod day_10_cathode_ray_tube;
 mod utils;
 
 fn main() {
