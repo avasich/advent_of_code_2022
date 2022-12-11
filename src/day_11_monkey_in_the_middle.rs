@@ -11,12 +11,28 @@ struct Monkey {
     monkey_if_false: usize,
 }
 
+#[derive(Copy, Clone)]
+enum WorryUpdate {
+    Divide(Worry),
+    Mod(Worry),
+}
+
 impl Monkey {
-    fn inspect_items(&self) -> usize {
-        self.items
-            .borrow_mut()
-            .iter_mut()
-            .for_each(|it| *it = (self.operation)(*it) / 3);
+    fn inspect_items(&self, update: WorryUpdate) -> usize {
+        match update {
+            WorryUpdate::Divide(x) => {
+                self.items
+                    .borrow_mut()
+                    .iter_mut()
+                    .for_each(|it| *it = (self.operation)(*it) / x);
+            }
+            WorryUpdate::Mod(m) => {
+                self.items
+                    .borrow_mut()
+                    .iter_mut()
+                    .for_each(|it| *it = (self.operation)(*it) % m);
+            }
+        }
         self.items.borrow().len()
     }
 
@@ -30,13 +46,19 @@ impl Monkey {
 }
 
 #[allow(unused)]
-fn keep_away(mut monkeys: Vec<Monkey>) -> usize {
-    let rounds = 20;
+fn keep_away(mut monkeys: Vec<Monkey>, divide_worry: bool, rounds: usize) -> usize {
+    let worry_update = if divide_worry {
+        WorryUpdate::Divide(3)
+    } else {
+        let base = monkeys.iter().fold(1, |acc, m| acc * m.test_divider);
+        WorryUpdate::Mod(base)
+    };
+
     let mut activity = vec![0; monkeys.len()];
 
     for _ in 0..rounds {
         for (i, m) in monkeys.iter().enumerate() {
-            activity[i] += m.inspect_items();
+            activity[i] += m.inspect_items(worry_update);
             for it in m.items.borrow_mut().iter() {
                 let to = m.dispatch_item(*it);
                 monkeys[to].items.borrow_mut().push(*it);
@@ -59,7 +81,8 @@ fn parse_monkeys(filename: &str) -> Vec<Monkey> {
             .skip(1)
             .take(1)
             .next()
-            .unwrap()
+            .unwrap_or("")
+            .trim()
             .to_string()
     }
 
@@ -128,22 +151,63 @@ mod d11_test {
     #[test]
     fn test_example_1() {
         let monkeys = parse_monkeys(EXAMPLE_FILE_1);
-        let res = keep_away(monkeys);
+        let res = keep_away(monkeys, true, 20);
         assert_eq!(res, 10605);
     }
 
     #[test]
     fn test_task_1() {
         let monkeys = parse_monkeys(TASK_FILE);
-        let res = keep_away(monkeys);
+        let res = keep_away(monkeys, true, 20);
         println!("{res}");
     }
 
-    #[bench]
-    fn bench_smth(b: &mut Bencher) {
-        b.iter(|| {
-            (0..10_000).for_each(|_| {
+    #[test]
+    fn test_example_2() {
+        let monkeys = parse_monkeys(EXAMPLE_FILE_1);
+        let res = keep_away(monkeys, false, 10000);
+        assert_eq!(res, 2713310158);
+    }
 
+    #[test]
+    fn test_task_2() {
+        let monkeys = parse_monkeys(TASK_FILE);
+        let res = keep_away(monkeys, false, 10000);
+        println!("{res}");
+    }
+
+    fn take_second_pattern(line: String, delimiter: &str) -> String {
+        match line.split(delimiter).collect::<Vec<_>>().as_slice() {
+            &[_, s] => s.trim().to_string(),
+            &[_] => "".to_string(),
+            _ => panic!(),
+        }
+    }
+
+    fn take_second_iterator(line: String, delimiter: &str) -> String {
+        line.split(delimiter)
+            .skip(1)
+            .take(1)
+            .next()
+            .unwrap_or("")
+            .trim()
+            .to_string()
+    }
+
+    #[bench]
+    fn bench_take_second_pattern(b: &mut Bencher) {
+        b.iter(|| {
+            (0..100_000).for_each(|_| {
+                take_second_pattern(String::from("this is a string"), " is ");
+            });
+        })
+    }
+
+    #[bench]
+    fn bench_take_second_iterator(b: &mut Bencher) {
+        b.iter(|| {
+            (0..100_000).for_each(|_| {
+                take_second_iterator(String::from("this is a string"), " is ");
             });
         })
     }
