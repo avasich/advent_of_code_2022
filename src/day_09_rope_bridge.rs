@@ -65,7 +65,7 @@ mod d09_test {
 
     static BENCH_SIZE: usize = 50;
     static TASK_FILE: &str = "./inputs/day_09/task.txt";
-    static EXAMPLE_FILE_1: &str = "./inputs/day_09/part_1_example.txt";
+    static EXAMPLE_FILE_1: &str = "./inputs/day_09/example_1.txt";
     static EXAMPLE_FILE_2: &str = "./inputs/day_09/part_2_example.txt";
 
     #[test]

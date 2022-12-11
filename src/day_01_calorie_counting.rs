@@ -1,5 +1,6 @@
 use itertools::Itertools;
 
+#[allow(unused)]
 fn max_calories(filename: &str, n: usize) -> u32 {
     let mut totals = vec![];
     let mut sum = 0;
@@ -22,7 +23,7 @@ fn max_calories(filename: &str, n: usize) -> u32 {
 mod d01_test {
     use super::*;
 
-    static EXAMPLE_1: &str = "./inputs/day_01/part_1_example.txt";
+    static EXAMPLE_1: &str = "./inputs/day_01/example_1.txt";
     static TASK: &str = "./inputs/day_01/task.txt";
 
     #[test]

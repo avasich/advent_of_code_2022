@@ -3,10 +3,10 @@ use std::io::{self, BufRead, BufReader, Error, Lines};
 use std::iter::Map;
 use std::path::Path;
 
+type InputLinesIterator = Map<Lines<BufReader<File>>, fn(Result<String, Error>) -> String>;
+
 #[allow(unused)]
-pub fn read_lines<P>(
-    filename: P,
-) -> Map<Lines<BufReader<File>>, fn(Result<String, Error>) -> String>
+pub fn read_lines<P>(filename: P) -> InputLinesIterator
 where
     P: AsRef<Path>,
 {

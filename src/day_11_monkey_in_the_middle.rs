@@ -69,7 +69,7 @@ fn keep_away(mut monkeys: Vec<Monkey>, divide_worry: bool, rounds: usize) -> usi
         .iter()
         .sorted_by(|a, b| b.cmp(a))
         .take(2)
-        .fold(1, |a, b| a * b)
+        .product()
 }
 
 #[allow(unused)]
@@ -90,13 +90,13 @@ fn parse_monkeys(filename: &str) -> Vec<Monkey> {
 
     fn parse_operation(line: String) -> Box<dyn Fn(Worry) -> Worry> {
         let operation_tokens: Vec<_> = line.split_whitespace().rev().take(2).collect();
-        match operation_tokens.as_slice() {
-            &["old", "*"] => Box::new(|x| x * x),
-            &[a, "+"] => {
+        match *operation_tokens.as_slice() {
+            ["old", "*"] => Box::new(|x| x * x),
+            [a, "+"] => {
                 let a: Worry = a.parse().unwrap();
                 Box::new(move |x| x + a)
             }
-            &[a, "*"] => {
+            [a, "*"] => {
                 let a: Worry = a.parse().unwrap();
                 Box::new(move |x| x * a)
             }
@@ -136,7 +136,7 @@ mod d11_test {
     use test::Bencher;
 
     static TASK_FILE: &str = "./inputs/day_11/task.txt";
-    static EXAMPLE_FILE_1: &str = "./inputs/day_11/part_1_example.txt";
+    static EXAMPLE_FILE_1: &str = "./inputs/day_11/example_1.txt";
 
     #[test]
     fn test_example_1() {
