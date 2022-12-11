@@ -20,18 +20,16 @@ enum WorryUpdate {
 impl Monkey {
     fn inspect_items(&self, update: WorryUpdate) -> usize {
         match update {
-            WorryUpdate::Divide(x) => {
-                self.items
-                    .borrow_mut()
-                    .iter_mut()
-                    .for_each(|it| *it = (self.operation)(*it) / x);
-            }
-            WorryUpdate::Mod(m) => {
-                self.items
-                    .borrow_mut()
-                    .iter_mut()
-                    .for_each(|it| *it = (self.operation)(*it) % m);
-            }
+            WorryUpdate::Divide(x) => self
+                .items
+                .borrow_mut()
+                .iter_mut()
+                .for_each(|it| *it = (self.operation)(*it) / x),
+            WorryUpdate::Mod(m) => self
+                .items
+                .borrow_mut()
+                .iter_mut()
+                .for_each(|it| *it = (self.operation)(*it) % m),
         }
         self.items.borrow().len()
     }
@@ -59,9 +57,9 @@ fn keep_away(mut monkeys: Vec<Monkey>, divide_worry: bool, rounds: usize) -> usi
     for _ in 0..rounds {
         for (i, m) in monkeys.iter().enumerate() {
             activity[i] += m.inspect_items(worry_update);
-            for it in m.items.borrow_mut().iter() {
-                let to = m.dispatch_item(*it);
-                monkeys[to].items.borrow_mut().push(*it);
+            for &it in m.items.borrow_mut().iter() {
+                let to = m.dispatch_item(it);
+                monkeys[to].items.borrow_mut().push(it);
             }
             m.items.borrow_mut().clear();
         }
@@ -77,12 +75,8 @@ fn keep_away(mut monkeys: Vec<Monkey>, divide_worry: bool, rounds: usize) -> usi
 #[allow(unused)]
 fn parse_monkeys(filename: &str) -> Vec<Monkey> {
     fn take_second(line: String, delimiter: &str) -> String {
-        line.split(delimiter)
-            .skip(1)
-            .take(1)
-            .next()
-            .unwrap_or("")
-            .trim()
+        line.split_once(delimiter)
+            .map_or("", |s| s.1.trim())
             .to_string()
     }
 
@@ -95,16 +89,14 @@ fn parse_monkeys(filename: &str) -> Vec<Monkey> {
     }
 
     fn parse_operation(line: String) -> Box<dyn Fn(Worry) -> Worry> {
-        let operation_line = take_second(line, "new =");
-        let operation_tokens: Vec<_> = operation_line.split_whitespace().collect();
+        let operation_tokens: Vec<_> = line.split_whitespace().rev().take(2).collect();
         match operation_tokens.as_slice() {
-            &["old", "+", "old"] => Box::new(|x| x + x),
-            &["old", "*", "old"] => Box::new(|x| x * x),
-            &["old", "+", a] | &[a, "+", "old"] => {
+            &["old", "*"] => Box::new(|x| x * x),
+            &[a, "+"] => {
                 let a: Worry = a.parse().unwrap();
                 Box::new(move |x| x + a)
             }
-            &["old", "*", a] | &[a, "*", "old"] => {
+            &[a, "*"] => {
                 let a: Worry = a.parse().unwrap();
                 Box::new(move |x| x * a)
             }
@@ -121,8 +113,6 @@ fn parse_monkeys(filename: &str) -> Vec<Monkey> {
     }
 
     crate::utils::read_lines(filename)
-        .expect("error reading file")
-        .map(Result::unwrap)
         .filter(|l| !l.is_empty() && !l.starts_with("//"))
         .chunks(6)
         .into_iter()
@@ -176,38 +166,11 @@ mod d11_test {
         println!("{res}");
     }
 
-    fn take_second_pattern(line: String, delimiter: &str) -> String {
-        match line.split(delimiter).collect::<Vec<_>>().as_slice() {
-            &[_, s] => s.trim().to_string(),
-            &[_] => "".to_string(),
-            _ => panic!(),
-        }
-    }
-
-    fn take_second_iterator(line: String, delimiter: &str) -> String {
-        line.split(delimiter)
-            .skip(1)
-            .take(1)
-            .next()
-            .unwrap_or("")
-            .trim()
-            .to_string()
-    }
-
     #[bench]
     fn bench_take_second_pattern(b: &mut Bencher) {
         b.iter(|| {
             (0..100_000).for_each(|_| {
-                take_second_pattern(String::from("this is a string"), " is ");
-            });
-        })
-    }
-
-    #[bench]
-    fn bench_take_second_iterator(b: &mut Bencher) {
-        b.iter(|| {
-            (0..100_000).for_each(|_| {
-                take_second_iterator(String::from("this is a string"), " is ");
+                // let _a = parse_operation("Operation: new = old * 19".to_string());
             });
         })
     }

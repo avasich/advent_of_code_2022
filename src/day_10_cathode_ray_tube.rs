@@ -56,37 +56,33 @@ mod d10_test {
 
     use test::Bencher;
 
-    use crate::utils::read_lines_vec;
+    use crate::utils::read_lines;
 
     use super::*;
 
     #[test]
     fn test_example_1() {
-        let lines = read_lines_vec("./inputs/day_10/part_1_example.txt")
-            .expect("unable to read first example input");
+        let lines = read_lines("./inputs/day_10/part_1_example.txt").collect();
         let res = strengths(lines);
         assert_eq!(res, 13140);
     }
 
     #[test]
     fn test_task_1() {
-        let lines =
-            read_lines_vec("./inputs/day_10/task.txt").expect("unable to read first example input");
+        let lines = read_lines("./inputs/day_10/task.txt").collect();
         let sum = strengths(lines);
         println!("{sum}");
     }
 
     #[test]
     fn test_task_2() {
-        let lines =
-            read_lines_vec("./inputs/day_10/task.txt").expect("unable to read first example input");
+        let lines = read_lines("./inputs/day_10/task.txt").collect();
         crt(lines);
     }
 
     #[bench]
     fn bench_1(b: &mut Bencher) {
-        let lines =
-            read_lines_vec("./inputs/day_10/task.txt").expect("unable to read first example input");
+        let lines: Vec<_> = read_lines("./inputs/day_10/task.txt").collect();
 
         b.iter(|| {
             (0..1000).for_each(|_| {

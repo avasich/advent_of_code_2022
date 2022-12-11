@@ -8,16 +8,17 @@ fn parse_move(line: String) -> (String, u8) {
     let mut tokens = line.split_whitespace();
     let dir = tokens.next().unwrap().to_owned();
     let steps = tokens
-        .next().unwrap()
-        .parse().expect("unable to parse number of steps");
+        .next()
+        .unwrap()
+        .parse()
+        .expect("unable to parse number of steps");
     (dir, steps)
 }
 
 fn move_closer(point: Point, move_to: Point) -> Point {
     let (dx, dy) = (move_to.0 - point.0, move_to.1 - point.1);
     if dx.abs() > 1 || dy.abs() > 1 {
-        (point.0 + dx.signum(),
-         point.1 + dy.signum())
+        (point.0 + dx.signum(), point.1 + dy.signum())
     } else {
         point
     }
@@ -35,10 +36,7 @@ fn move_head((x, y): Point, dir: &str) -> Point {
 
 #[allow(unused)]
 fn rope(filename: &str, length: usize) -> usize {
-    let moves = read_lines(filename)
-        .expect("unable to read input")
-        .map(Result::unwrap)
-        .map(parse_move);
+    let moves = read_lines(filename).map(parse_move);
 
     let mut visited = HashSet::new();
     let mut knots = vec![(0, 0); length];
