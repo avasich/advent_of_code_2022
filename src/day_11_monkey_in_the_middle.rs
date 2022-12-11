@@ -1,9 +1,10 @@
-use itertools::Itertools;
 use std::cell::RefCell;
+
+use itertools::Itertools;
 
 type Worry = i64;
 
-struct Monkey {
+pub struct Monkey {
     items: RefCell<Vec<Worry>>,
     operation: Box<dyn Fn(Worry) -> Worry>,
     test_divider: Worry,
@@ -43,8 +44,7 @@ impl Monkey {
     }
 }
 
-#[allow(unused)]
-fn keep_away(mut monkeys: Vec<Monkey>, divide_worry: bool, rounds: usize) -> usize {
+pub fn keep_away(monkeys: Vec<Monkey>, divide_worry: bool, rounds: usize) -> usize {
     let worry_update = if divide_worry {
         WorryUpdate::Divide(3)
     } else {
@@ -65,15 +65,10 @@ fn keep_away(mut monkeys: Vec<Monkey>, divide_worry: bool, rounds: usize) -> usi
         }
     }
 
-    activity
-        .iter()
-        .sorted_by(|a, b| b.cmp(a))
-        .take(2)
-        .product()
+    activity.iter().sorted_by(|a, b| b.cmp(a)).take(2).product()
 }
 
-#[allow(unused)]
-fn parse_monkeys(filename: &str) -> Vec<Monkey> {
+pub fn parse_monkeys(filename: &str) -> Vec<Monkey> {
     fn take_second(line: String, delimiter: &str) -> String {
         line.split_once(delimiter)
             .map_or("", |s| s.1.trim())
@@ -130,10 +125,12 @@ fn parse_monkeys(filename: &str) -> Vec<Monkey> {
 }
 
 #[cfg(test)]
-mod d11_test {
+mod d11_tests {
     extern crate test;
-    use super::*;
+
     use test::Bencher;
+
+    use super::*;
 
     static TASK_FILE: &str = "./inputs/day_11/task.txt";
     static EXAMPLE_FILE_1: &str = "./inputs/day_11/example_1.txt";

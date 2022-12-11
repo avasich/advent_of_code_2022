@@ -14,8 +14,7 @@ fn parse_cycle(cycle: String) -> Vec<i32> {
     }
 }
 
-#[allow(unused)]
-fn strengths(lines: Vec<String>) -> i32 {
+pub fn strengths(lines: Vec<String>) -> i32 {
     let adds = lines.into_iter().flat_map(parse_cycle);
 
     let mut register = 1;
@@ -30,8 +29,7 @@ fn strengths(lines: Vec<String>) -> i32 {
     res
 }
 
-#[allow(unused)]
-fn crt(lines: Vec<String>) {
+pub fn crt(lines: Vec<String>) {
     let adds = lines.into_iter().flat_map(parse_cycle);
 
     let mut register = 1;
@@ -51,7 +49,7 @@ fn crt(lines: Vec<String>) {
 }
 
 #[cfg(test)]
-mod d10_test {
+mod d10_tests {
     extern crate test;
 
     use test::Bencher;
@@ -60,29 +58,32 @@ mod d10_test {
 
     use super::*;
 
+    static EXAMPLE_1_FILE: &str = "./inputs/day_10/example_1.txt";
+    static TASK_FILE: &str = "./inputs/day_10/task.txt";
+
     #[test]
     fn test_example_1() {
-        let lines = read_lines("./inputs/day_10/part_1_example.txt").collect();
+        let lines = read_lines(EXAMPLE_1_FILE).collect();
         let res = strengths(lines);
         assert_eq!(res, 13140);
     }
 
     #[test]
     fn test_task_1() {
-        let lines = read_lines("./inputs/day_10/task.txt").collect();
+        let lines = read_lines(TASK_FILE).collect();
         let sum = strengths(lines);
         println!("{sum}");
     }
 
     #[test]
     fn test_task_2() {
-        let lines = read_lines("./inputs/day_10/task.txt").collect();
+        let lines = read_lines(TASK_FILE).collect();
         crt(lines);
     }
 
     #[bench]
     fn bench_1(b: &mut Bencher) {
-        let lines: Vec<_> = read_lines("./inputs/day_10/task.txt").collect();
+        let lines: Vec<_> = read_lines(TASK_FILE).collect();
 
         b.iter(|| {
             (0..1000).for_each(|_| {

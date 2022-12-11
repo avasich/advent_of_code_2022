@@ -34,8 +34,7 @@ fn move_head((x, y): Point, dir: &str) -> Point {
     }
 }
 
-#[allow(unused)]
-fn rope(filename: &str, length: usize) -> usize {
+pub fn rope(filename: &str, length: usize) -> usize {
     let moves = read_lines(filename).map(parse_move);
 
     let mut visited = HashSet::new();
@@ -56,7 +55,7 @@ fn rope(filename: &str, length: usize) -> usize {
 }
 
 #[cfg(test)]
-mod d09_test {
+mod d09_tests {
     extern crate test;
 
     use test::Bencher;
@@ -66,7 +65,7 @@ mod d09_test {
     static BENCH_SIZE: usize = 50;
     static TASK_FILE: &str = "./inputs/day_09/task.txt";
     static EXAMPLE_FILE_1: &str = "./inputs/day_09/example_1.txt";
-    static EXAMPLE_FILE_2: &str = "./inputs/day_09/part_2_example.txt";
+    static EXAMPLE_FILE_2: &str = "./inputs/day_09/example_2.txt";
 
     #[test]
     fn run_part_one_example() {

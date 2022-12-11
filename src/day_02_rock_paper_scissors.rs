@@ -62,8 +62,7 @@ impl Outcome {
     }
 }
 
-#[allow(unused)]
-fn score_part_one(filename: &str) -> u32 {
+pub fn score_part_one(filename: &str) -> u32 {
     crate::utils::read_lines(filename)
         .map(|line| {
             let mut moves = line.split_whitespace().map(Move::from_str);
@@ -74,8 +73,7 @@ fn score_part_one(filename: &str) -> u32 {
         .sum()
 }
 
-#[allow(unused)]
-fn score_part_two(filename: &str) -> u32 {
+pub fn score_part_two(filename: &str) -> u32 {
     crate::utils::read_lines(filename)
         .map(|line| {
             let mut tokens = line.split_whitespace();
@@ -87,7 +85,7 @@ fn score_part_two(filename: &str) -> u32 {
 }
 
 #[cfg(test)]
-mod d01_tests {
+mod d02_tests {
     use super::*;
 
     static TASK: &str = "./inputs/day_02/task.txt";

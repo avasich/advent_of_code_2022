@@ -1,7 +1,6 @@
 use itertools::Itertools;
 
-#[allow(unused)]
-fn max_calories(filename: &str, n: usize) -> u32 {
+pub fn max_calories(filename: &str, n: usize) -> u32 {
     let mut totals = vec![];
     let mut sum = 0;
     let lines = crate::utils::read_lines(filename);
@@ -20,7 +19,7 @@ fn max_calories(filename: &str, n: usize) -> u32 {
 }
 
 #[cfg(test)]
-mod d01_test {
+mod d01_tests {
     use super::*;
 
     static EXAMPLE_1: &str = "./inputs/day_01/example_1.txt";
