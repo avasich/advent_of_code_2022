@@ -77,8 +77,7 @@ pub fn parse_monkeys(filename: &str) -> Vec<Monkey> {
 
     fn parse_items(line: String) -> Vec<Worry> {
         take_second(line, ":")
-            .split(',')
-            .filter(|item| !item.is_empty())
+            .split_terminator(',')
             .map(|item| item.trim().parse().unwrap())
             .collect()
     }
