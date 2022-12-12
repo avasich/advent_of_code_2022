@@ -1,16 +1,18 @@
+// could be done without allocations but I'm too lazy to figure out how
+
 use std::collections::{HashSet, VecDeque};
 
 fn count_unique<'a>(xs: impl Iterator<Item = &'a char>) -> usize {
     HashSet::<_>::from_iter(xs).len()
 }
 
-pub fn sequence_start(filename: &str, len: usize) -> Result<usize, ()> {
+pub fn sequence_start(filename: &str, len: usize) -> Option<usize> {
     let line = crate::utils::read_lines(filename).next().unwrap();
     let mut chars = line.chars();
-    let mut window = VecDeque::from_iter((&mut chars).take(len));
+    let mut window = VecDeque::from_iter(chars.by_ref().take(len));
 
     if count_unique(window.iter()) == len {
-        return Ok(1);
+        return Some(1);
     }
 
     for (i, c) in chars.enumerate() {
@@ -18,11 +20,11 @@ pub fn sequence_start(filename: &str, len: usize) -> Result<usize, ()> {
         window.push_back(c);
 
         if count_unique(window.iter()) == len {
-            return Ok(i + len + 1);
+            return Some(i + len + 1);
         }
     }
 
-    Err(())
+    None
 }
 
 #[cfg(test)]
@@ -38,11 +40,11 @@ mod d05_tests {
 
     #[test]
     fn example_1_test() {
-        assert_eq!(Ok(7), sequence_start(EXAMPLE_1_FILE, 4));
-        assert_eq!(Ok(5), sequence_start(EXAMPLE_2_FILE, 4));
-        assert_eq!(Ok(6), sequence_start(EXAMPLE_3_FILE, 4));
-        assert_eq!(Ok(10), sequence_start(EXAMPLE_4_FILE, 4));
-        assert_eq!(Ok(11), sequence_start(EXAMPLE_5_FILE, 4));
+        assert_eq!(Some(7), sequence_start(EXAMPLE_1_FILE, 4));
+        assert_eq!(Some(5), sequence_start(EXAMPLE_2_FILE, 4));
+        assert_eq!(Some(6), sequence_start(EXAMPLE_3_FILE, 4));
+        assert_eq!(Some(10), sequence_start(EXAMPLE_4_FILE, 4));
+        assert_eq!(Some(11), sequence_start(EXAMPLE_5_FILE, 4));
     }
 
     #[test]
@@ -53,11 +55,11 @@ mod d05_tests {
 
     #[test]
     fn example_2_test() {
-        assert_eq!(Ok(19), sequence_start(EXAMPLE_1_FILE, 14));
-        assert_eq!(Ok(23), sequence_start(EXAMPLE_2_FILE, 14));
-        assert_eq!(Ok(23), sequence_start(EXAMPLE_3_FILE, 14));
-        assert_eq!(Ok(29), sequence_start(EXAMPLE_4_FILE, 14));
-        assert_eq!(Ok(26), sequence_start(EXAMPLE_5_FILE, 14));
+        assert_eq!(Some(19), sequence_start(EXAMPLE_1_FILE, 14));
+        assert_eq!(Some(23), sequence_start(EXAMPLE_2_FILE, 14));
+        assert_eq!(Some(23), sequence_start(EXAMPLE_3_FILE, 14));
+        assert_eq!(Some(29), sequence_start(EXAMPLE_4_FILE, 14));
+        assert_eq!(Some(26), sequence_start(EXAMPLE_5_FILE, 14));
     }
 
     #[test]

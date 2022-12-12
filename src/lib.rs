@@ -9,4 +9,5 @@ pub mod day_06_tuning_trouble;
 pub mod day_09_rope_bridge;
 pub mod day_10_cathode_ray_tube;
 pub mod day_11_monkey_in_the_middle;
+pub mod day_12_hill_climbing;
 pub mod utils;
