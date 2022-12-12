@@ -28,12 +28,11 @@ pub fn check_part_two(filename: &str) -> u32 {
     crate::utils::read_lines(filename)
         .chunks(3)
         .into_iter()
-        .map(|mut chunk| {
-            let c1: &HashSet<_> = &chunk.next().unwrap().chars().collect();
-            let c2: &HashSet<_> = &chunk.next().unwrap().chars().collect();
-            let c3: &HashSet<_> = &chunk.next().unwrap().chars().collect();
-            // can we do better?
-            *(&(c1 & c2) & c3).iter().next().unwrap()
+        .flat_map(|chunk| {
+            chunk
+                .map(|s| HashSet::<_>::from_iter(s.chars()))
+                .reduce(|a, b| &a & &b)
+                .unwrap()
         })
         .map(priority)
         .sum()

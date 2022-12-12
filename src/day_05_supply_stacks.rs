@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use std::collections::VecDeque;
 
 pub trait CrateMover {
@@ -23,14 +22,9 @@ struct CrateMover9001;
 impl CrateMover for CrateMover9001 {
     fn apply_moves(stacks: &mut Vec<VecDeque<char>>, moves: impl Iterator<Item = Move>) {
         for (count, from, to) in moves {
-            let to_move: Vec<_> = (0..count)
-                .map(|_| {
-                    stacks[from]
-                        .pop_back()
-                        .expect("trying to move item from empty stack")
-                })
-                .collect();
-            stacks[to].extend(to_move.iter().rev());
+            let start = stacks[from].len() - count;
+            let to_move: Vec<_> = stacks[from].drain(start..).collect();
+            stacks[to].extend(to_move);
         }
     }
 }
@@ -50,7 +44,7 @@ fn parse_stacks(lines: impl Iterator<Item = String>, total: usize) -> Vec<VecDeq
     stacks
 }
 
-type Move = (u32, usize, usize);
+type Move = (usize, usize, usize);
 
 fn parse_move(line: String) -> Move {
     let mut ms = line.split_whitespace().skip(1).step_by(2);
@@ -62,6 +56,8 @@ fn parse_move(line: String) -> Move {
 }
 
 pub fn move_crates<CM: CrateMover>(filename: &str) -> String {
+    use itertools::Itertools;
+
     let groups = crate::utils::read_lines(filename)
         .filter(|s| !s.is_empty())
         .group_by(|s| s.trim().chars().next());
