@@ -1,12 +1,9 @@
 use std::fs::File;
-use std::io::{self, BufRead, BufReader, Error, Lines};
-use std::iter::Map;
+use std::io::{self, BufRead};
 use std::path::Path;
 
-type InputLinesIterator = Map<Lines<BufReader<File>>, fn(Result<String, Error>) -> String>;
-
 #[allow(unused)]
-pub fn read_lines<P>(filename: P) -> InputLinesIterator
+pub fn read_lines<P>(filename: P) -> impl Iterator<Item = String>
 where
     P: AsRef<Path>,
 {

@@ -11,17 +11,17 @@ fn parse_intervals(line: String) -> (u32, u32, u32, u32) {
 pub fn count_full_overlaps(filename: &str) -> usize {
     crate::utils::read_lines(filename)
         .map(parse_intervals)
-        .filter(|(a1, b1, a2, b2)| a1 <= a2 && b2 <= b1 || a2 <= a1 && b1 <= b2)
+        .filter(|(a1, a2, b1, b2)| a1 <= b1 && b2 <= a2 || b1 <= a1 && a2 <= b2)
         .count()
 }
 
 pub fn count_all_overlaps(filename: &str) -> usize {
     crate::utils::read_lines(filename)
         .map(parse_intervals)
-        .filter(|(a1, b1, a2, b2)| {
-            let r1 = a1..=b1;
-            let r2 = a2..=b2;
-            r1.contains(&a2) || r1.contains(&b2) || r2.contains(&a1) || r2.contains(&b1)
+        .filter(|(a1, a2, b1, b2)| {
+            let a = a1..=a2;
+            let b = b1..=b2;
+            a.contains(&b1) || a.contains(&b2) || b.contains(&a1) || b.contains(&a2)
         })
         .count()
 }
